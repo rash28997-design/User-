@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Style &amp; Stich BD | Pro Fashion Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <style>
+    /* ==== CSS সম্পূর্ণ অপরিবর্তিত ==== */
+    :root {
+      --ink: #111318;
+      --ink-soft: #1d212b;
+      --gold: #c89b4b;
+      --gold-light: #f5e6c4;
+      --gold-dark: #9c7228;
+      --crimson: #b91c3b;
+      --bg: #f8f6f2;
+      --card: #ffffff;
+      --text: #1c1f26;
+      --muted: #6b7280;
+      --border: #e8e2d8;
+      --success: #0d9488;
+      --bkash: #e2136e;
+      --nagad: #f65e14;
+      --radius: 18px;
+      --shadow: 0 8px 28px rgba(17, 19, 24, 0.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: #e7e2da; color: var(--text); display: flex; justify-content: center; min-height: 100vh;
+    }
+    .app-shell {
+      width: 100%; max-width: 480px; min-height: 100vh; background: var(--bg);
+      position: relative; box-shadow: 0 0 50px rgba(17, 19, 24, 0.16); overflow-x: hidden;
+    }
+    .top-header {
+      position: sticky; top: 0; z-index: 50; background: rgba(17, 19, 24, 0.97);
+      backdrop-filter: blur(14px); border-bottom: 1px solid rgba(200, 155, 75, 0.3);
+      padding: 11px 16px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; color: #fff;
+    }
+    .brand-wrap { display: flex; align-items: center; gap: 11px; cursor: pointer; }
+    .logo-ring-sm {
+      width: 42px; height: 42px; border-radius: 12px; padding: 2px;
+      background: linear-gradient(135deg, var(--gold), #fff3d6, var(--gold-dark)); flex-shrink: 0;
+    }
+    .brand-logo { width: 100%; height: 100%; border-radius: 10px; object-fit: cover; background: #fff; }
+    .brand-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; font-weight: 700; line-height: 1.05; }
+    .brand-sub { font-size: 10px; color: var(--gold-light); letter-spacing: 0.7px; text-transform: uppercase; }
+    .header-pill {
+      font-size: 11.5px; font-weight: 700; padding: 6px 12px; border-radius: 999px;
+      background: rgba(200, 155, 75, 0.16); color: var(--gold-light);
+      border: 1px solid rgba(200, 155, 75, 0.45); cursor: pointer;
+    }
+    .sub-header {
+      position: sticky; top: 0; z-index: 55; background: #fff; border-bottom: 1px solid var(--border);
+      padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+    }
+    .back-btn {
+      width: 36px; height: 36px; border-radius: 11px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--ink); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .sub-header-title { font-size: 16px; font-weight: 800; color: var(--ink); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .step-pill { font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px; background: var(--gold-light); color: var(--gold-dark); }
+    .page { display: none; min-height: calc(100vh - 65px); animation: pageSlide 0.22s ease; }
+    .page.active { display: block; }
+    .page-pad { padding: 14px 16px 96px; }
+    .subpage-pad { padding: 14px 16px 92px; }
+    @keyframes pageSlide { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes floatUpDown { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-13px); } }
+    @keyframes shadowPulse { 0%, 100% { transform: scale(1); opacity: 0.32; } 50% { transform: scale(0.75); opacity: 0.14; } }
+    @keyframes softGlow { 0%, 100% { box-shadow: 0 0 0 4px rgba(200, 155, 75, 0.22), 0 14px 30px rgba(17, 19, 24, 0.18); } 50% { box-shadow: 0 0 0 9px rgba(200, 155, 75, 0.35), 0 20px 38px rgba(200, 155, 75, 0.28); } }
+    .search-box { position: relative; margin-bottom: 14px; }
+    .search-box input { width: 100%; padding: 12px 14px 12px 42px; border-radius: 14px; border: 1px solid var(--border); background: #fff; font-family: inherit; font-size: 13.5px; outline: none; }
+    .search-box input:focus { border-color: var(--gold); }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gold-dark); }
+    .banner-wrapper { position: relative; border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid rgba(200, 155, 75, 0.25); }
+    .banner-track { display: flex; transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+    .banner-slide { min-width: 100%; height: 175px; padding: 20px; display: flex; flex-direction: column; justify-content: center; color: #fff; position: relative; background-size: cover; background-position: center; }
+    .banner-slide::before { content: ""; position: absolute; inset: 0; background: linear-gradient(95deg, rgba(17, 19, 24, 0.9) 25%, rgba(17, 19, 24, 0.4) 100%); }
+    .banner-content { position: relative; z-index: 2; max-width: 84%; }
+    .banner-badge { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.9px; background: rgba(200, 155, 75, 0.25); border: 1px solid rgba(200, 155, 75, 0.6); color: var(--gold-light); padding: 4px 10px; border-radius: 999px; margin-bottom: 8px; }
+    .banner-slide h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; font-weight: 700; line-height: 1.15; margin-bottom: 5px; }
+    .banner-slide p { font-size: 12px; color: #e2e8f0; line-height: 1.4; }
+    .banner-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 3; }
+    .banner-dot { width: 7px; height: 7px; border-radius: 999px; background: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.25s; }
+    .banner-dot.active { width: 22px; background: var(--gold); }
+    .cat-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; scrollbar-width: none; }
+    .cat-strip::-webkit-scrollbar { display: none; }
+    .cat-chip { white-space: nowrap; padding: 8px 15px; border-radius: 999px; font-size: 12.5px; font-weight: 600; background: #fff; border: 1px solid var(--border); color: var(--muted); cursor: pointer; }
+    .cat-chip.active { background: var(--ink); color: var(--gold-light); border-color: var(--ink); }
+    .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .section-head h3 { font-size: 16.5px; font-weight: 800; color: var(--ink); }
+    .section-head span { font-size: 12px; color: var(--gold-dark); font-weight: 700; }
+    .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .product-card { background: #fff; border-radius: 16px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; box-shadow: 0 4px 14px rgba(17, 19, 24, 0.04); display: flex; flex-direction: column; }
+    .product-img-box { position: relative; width: 100%; aspect-ratio: 4 / 4.4; background: #efeae2; overflow: hidden; }
+    .product-img-box img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+    .discount-tag { position: absolute; top: 8px; left: 8px; background: var(--ink); color: var(--gold-light); border: 1px solid rgba(200, 155, 75, 0.4); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 7px; }
+    .rating-pill { position: absolute; bottom: 8px; right: 8px; background: rgba(255,255,255,0.92); color: var(--ink); font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 999px; }
+    .product-info { padding: 10px 11px 12px; display: flex; flex-direction: column; flex: 1; }
+    .product-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--gold-dark); font-weight: 700; margin-bottom: 3px; }
+    .product-title { font-size: 13.5px; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: 7px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .price-row { margin-top: auto; display: flex; align-items: baseline; gap: 6px; }
+    .price-now { font-size: 15px; font-weight: 800; color: var(--crimson); }
+    .price-old { font-size: 11.5px; color: #9ca3af; text-decoration: line-through; }
+    .gallery-main { width: 100%; aspect-ratio: 4 / 4; border-radius: 18px; overflow: hidden; background: #efeae2; margin-bottom: 10px; border: 1px solid var(--border); }
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .gallery-thumbs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; }
+    .gallery-thumb { width: 66px; height: 66px; border-radius: 12px; overflow: hidden; border: 2px solid transparent; cursor: pointer; flex-shrink: 0; }
+    .gallery-thumb.active { border-color: var(--gold-dark); }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .size-row { display: flex; gap: 8px; margin: 9px 0 16px; }
+    .size-pill { padding: 8px 15px; border-radius: 10px; border: 1px solid var(--border); background: #fff; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .size-pill.active { background: var(--ink); color: var(--gold-light); border-color: var(--ink); }
+    .detail-desc { font-size: 13.5px; line-height: 1.65; color: #4b5563; background: #fff; padding: 14px; border-radius: 14px; border: 1px solid var(--border); }
+    .sticky-bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; z-index: 65; box-shadow: 0 -6px 24px rgba(17, 19, 24, 0.08); }
+    .compact-actions { display: flex; gap: 8px; margin-left: auto; }
+    .btn-mini-cart { padding: 9px 13px; border-radius: 10px; border: 1.5px solid var(--ink); background: #fff; color: var(--ink); font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+    .btn-mini-order { padding: 9px 15px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--ink), #272c38); color: var(--gold-light); font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; }
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(14px); border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(4, 1fr); padding: 7px 6px 11px; z-index: 60; box-shadow: 0 -6px 24px rgba(17, 19, 24, 0.06); }
+    .bottom-nav.hidden { display: none; }
+    .nav-btn { border: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--muted); font-family: inherit; font-size: 11px; font-weight: 600; cursor: pointer; position: relative; padding: 4px 0; }
+    .nav-btn.active { color: var(--ink); font-weight: 800; }
+    .nav-btn.active svg { stroke: var(--gold-dark); }
+    .nav-btn svg { width: 22px; height: 22px; }
+    .cart-badge { position: absolute; top: 0; right: calc(50% - 19px); min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px; background: var(--crimson); color: #fff; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+    .brand-empty-stage { background: #fff; border: 1px solid var(--border); border-radius: 22px; padding: 36px 20px 28px; text-align: center; box-shadow: var(--shadow); }
+    .float-scene { position: relative; width: 150px; height: 155px; margin: 0 auto 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .float-actor { position: relative; width: 120px; height: 128px; animation: floatUpDown 2.5s ease-in-out infinite; display: flex; align-items: center; justify-content: center; }
+    .float-shadow { width: 82px; height: 13px; background: radial-gradient(ellipse at center, rgba(17,19,24,0.35) 0%, transparent 72%); border-radius: 50%; margin-top: 4px; animation: shadowPulse 2.5s ease-in-out infinite; }
+    .bag-logo-badge { position: absolute; bottom: 18px; width: 54px; height: 54px; border-radius: 50%; padding: 2.5px; background: linear-gradient(135deg, var(--gold), #fff3d6); box-shadow: 0 6px 16px rgba(0,0,0,0.22); overflow: hidden; }
+    .bag-logo-badge img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #fff; }
+    .cart-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .cart-item { background: #fff; border: 1px solid var(--border); border-radius: 15px; padding: 11px; display: flex; gap: 12px; align-items: center; }
+    .cart-item img { width: 74px; height: 78px; border-radius: 11px; object-fit: cover; object-position: top center; flex-shrink: 0; }
+    .cart-item-body { flex: 1; min-width: 0; }
+    .cart-item-title { font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cart-item-meta { font-size: 11.5px; color: var(--muted); margin-bottom: 7px; }
+    .cart-controls { display: flex; align-items: center; justify-content: space-between; }
+    .qty-box { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 3px 6px; }
+    .qty-btn { width: 23px; height: 23px; border: none; background: #fff; border-radius: 6px; font-weight: 800; cursor: pointer; }
+    .remove-btn { border: none; background: #fee2e2; color: #dc2626; font-size: 11px; font-weight: 700; padding: 5px 9px; border-radius: 7px; cursor: pointer; }
+    .summary-card, .card-box { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 14px; }
+    .summary-line { display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 8px; color: var(--muted); }
+    .summary-line.total { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 6px; font-size: 16px; font-weight: 800; color: var(--ink); }
+    .btn-primary { width: 100%; padding: 13px 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--ink), #272c38); color: var(--gold-light); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .btn-gold { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: #fff; }
+    .form-group { margin-bottom: 13px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 13px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 13.5px; outline: none; background: #fff; color: var(--ink); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pay-option-card { background: #fff; border: 2px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all 0.2s ease; }
+    .pay-option-card.selected { border-color: var(--ink); background: #fffdf8; box-shadow: 0 8px 22px rgba(17, 19, 24, 0.08); }
+    .pay-option-card.selected.is-bkash { border-color: var(--bkash); background: #fff5f9; }
+    .pay-option-card.selected.is-nagad { border-color: var(--nagad); background: #fff8f3; }
+    .pay-icon-box { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
+    .pay-icon-cod { background: var(--ink); color: var(--gold-light); font-size: 22px; }
+    .pay-icon-bkash { background: var(--bkash); color: #fff; }
+    .pay-icon-nagad { background: var(--nagad); color: #fff; }
+    .pay-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #cbd5e1; margin-left: auto; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .pay-option-card.selected .pay-radio { border-color: var(--ink); }
+    .pay-option-card.selected .pay-radio::after { content: ""; width: 11px; height: 11px; border-radius: 50%; background: var(--ink); }
+    .pay-option-card.selected.is-bkash .pay-radio { border-color: var(--bkash); }
+    .pay-option-card.selected.is-bkash .pay-radio::after { background: var(--bkash); }
+    .pay-option-card.selected.is-nagad .pay-radio { border-color: var(--nagad); }
+    .pay-option-card.selected.is-nagad .pay-radio::after { background: var(--nagad); }
+    .mfs-hero-box { border-radius: 20px; padding: 20px 16px; color: #fff; text-align: center; margin-bottom: 16px; }
+    .mfs-hero-box.bkash { background: linear-gradient(135deg, #c70d5d, #e2136e); }
+    .mfs-hero-box.nagad { background: linear-gradient(135deg, #d9480f, #f65e14); }
+    .copy-number-pill { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.18); border: 1px dashed rgba(255,255,255,0.65); border-radius: 13px; padding: 10px 12px; margin-top: 12px; }
+    .copy-btn { border: none; background: #fff; color: var(--ink); font-family: inherit; font-size: 12px; font-weight: 800; padding: 7px 13px; border-radius: 9px; cursor: pointer; }
+    .tracking-brand-banner { background: linear-gradient(135deg, var(--ink), var(--ink-soft)); border: 1px solid rgba(200, 155, 75, 0.35); border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 14px; color: #fff; }
+    .mini-float-bag { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; animation: floatUpDown 2.4s ease-in-out infinite; flex-shrink: 0; }
+    .mini-float-bag img { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; background: #fff; }
+    .order-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 13px; margin-bottom: 11px; cursor: pointer; }
+    .order-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #f1ede6; }
+    .serial-badge { font-size: 11.5px; font-weight: 800; color: var(--ink); background: #f5f1ea; padding: 4px 9px; border-radius: 7px; border: 1px solid var(--border); }
+    .status-pill { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+    .st-Pending { background: #fef3c7; color: #b45309; }
+    .st-Confirmed { background: #dbeafe; color: #1d4ed8; }
+    .st-Packing { background: #ede9fe; color: #6d28d9; }
+    .st-Delivery { background: #ffedd5; color: #c2410c; }
+    .st-Delivered { background: #d1fae5; color: #047857; }
+    .order-preview { display: flex; gap: 12px; align-items: center; }
+    .order-preview img { width: 60px; height: 64px; border-radius: 10px; object-fit: cover; object-position: top center; }
+    .order-meta h4 { font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+    .order-meta p { font-size: 12px; color: var(--muted); }
+    .tap-hint { margin-top: 8px; font-size: 11.5px; font-weight: 700; color: var(--gold-dark); text-align: right; }
+    .timeline { margin: 14px 0; padding-left: 18px; border-left: 2px solid var(--border); }
+    .tl-step { position: relative; padding-bottom: 16px; padding-left: 12px; }
+    .tl-step:last-child { padding-bottom: 0; }
+    .tl-dot { position: absolute; left: -25px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #cbd5e1; border: 2px solid #fff; }
+    .tl-step.done .tl-dot { background: var(--success); box-shadow: 0 0 0 3px #ccfbf1; }
+    .tl-step.current .tl-dot { background: var(--gold-dark); box-shadow: 0 0 0 3px var(--gold-light); }
+    .tl-step h5 { font-size: 13px; font-weight: 700; color: var(--ink); }
+    .tl-step p { font-size: 11.5px; color: var(--muted); }
+    .profile-logo-hero { position: relative; border-radius: 22px; padding: 24px 18px 20px; text-align: center; color: #fff; margin-bottom: 14px; overflow: hidden; background: var(--ink); border: 1px solid rgba(200, 155, 75, 0.35); box-shadow: 0 12px 32px rgba(17, 19, 24, 0.18); }
+    .ambient-logo-bg { position: absolute; inset: -30px; background-image: url('https://i.ibb.co.com/YTXRL2fT/file-000000005838820ba5db4496221a9716.png'); background-size: cover; background-position: center; filter: blur(28px) saturate(1.4) brightness(0.42); opacity: 0.78; z-index: 0; }
+    .hero-inner { position: relative; z-index: 2; }
+    .medallion-logo { width: 90px; height: 90px; margin: 0 auto 10px; border-radius: 50%; padding: 3.5px; background: linear-gradient(135deg, var(--gold), #fff4d9, var(--gold-dark)); animation: softGlow 3s ease-in-out infinite; }
+    .medallion-logo img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #fff; }
+    .profile-logo-hero h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; font-weight: 700; margin-bottom: 3px; }
+    .profile-logo-hero p { font-size: 12px; color: var(--gold-light); }
+    .vip-card { background: linear-gradient(135deg, #111318 0%, #232836 100%); border: 1px solid rgba(200, 155, 75, 0.45); border-radius: 22px; padding: 18px; color: #fff; margin-bottom: 14px; position: relative; overflow: hidden; box-shadow: 0 14px 32px rgba(17, 19, 24, 0.18); }
+    .vip-row { display: flex; align-items: center; gap: 14px; position: relative; z-index: 2; }
+    .vip-avatar { width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), #fff2cf); color: var(--ink); font-size: 22px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .vip-badge { display: inline-block; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; background: rgba(200, 155, 75, 0.22); color: var(--gold-light); border: 1px solid rgba(200, 155, 75, 0.5); padding: 3px 8px; border-radius: 999px; margin-bottom: 4px; }
+    .vip-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.12); position: relative; z-index: 2; }
+    .vip-stat { text-align: center; cursor: pointer; }
+    .vip-stat strong { display: block; font-size: 18px; color: var(--gold-light); }
+    .vip-stat span { font-size: 11px; color: #cbd5e1; }
+    .pro-menu { background: #fff; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
+    .pro-menu-item { display: flex; align-items: center; gap: 13px; padding: 14px 15px; border-bottom: 1px solid #f1ede6; cursor: pointer; transition: background 0.15s; }
+    .pro-menu-item:last-child { border-bottom: none; }
+    .pro-menu-item:hover { background: var(--bg); }
+    .menu-num { width: 24px; height: 24px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); font-size: 11px; font-weight: 800; color: var(--gold-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .menu-icon { width: 38px; height: 38px; border-radius: 11px; background: #f5f1ea; color: var(--ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 17px; }
+    .menu-text { flex: 1; min-width: 0; }
+    .menu-text h4 { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+    .menu-text p { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pro-menu-item.danger .menu-icon { background: #fee2e2; color: #dc2626; }
+    .pro-menu-item.danger h4 { color: #dc2626; }
+    .google-btn { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #dadce0; background: #fff; color: #3c4043; font-family: inherit; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
+    .divider-or { display: flex; align-items: center; gap: 10px; margin: 14px 0; color: var(--muted); font-size: 11.5px; font-weight: 600; }
+    .divider-or::before, .divider-or::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+    .auth-switch-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .auth-tab-btn { padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); font-family: inherit; font-size: 13.5px; font-weight: 700; color: var(--muted); cursor: pointer; }
+    .auth-tab-btn.active { background: var(--ink); color: var(--gold-light); border-color: var(--ink); }
+    .gmail-account-item { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: 13px; margin-bottom: 9px; cursor: pointer; background: #fff; }
+    .gmail-avatar { width: 40px; height: 40px; border-radius: 50%; background: #1a73e8; color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .toast { position: fixed; top: 72px; left: 50%; transform: translateX(-50%) translateY(-12px); background: var(--ink); color: var(--gold-light); border: 1px solid rgba(200, 155, 75, 0.45); padding: 10px 18px; border-radius: 999px; font-size: 12.5px; font-weight: 600; z-index: 200; opacity: 0; pointer-events: none; transition: all 0.25s ease; box-shadow: 0 10px 25px rgba(17, 19, 24, 0.28); white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- Main Brand Header -->
+  <header class="top-header" id="mainHeader">
+    <div class="brand-wrap" onclick="goMainTab('home')">
+      <div class="logo-ring-sm">
+        <img
+          src="https://i.ibb.co.com/YTXRL2fT/file-000000005838820ba5db4496221a9716.png"
+          alt="Style & Stich BD"
+          class="brand-logo"
+          onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23111318%22/><text x=%2250%22 y=%2258%22 text-anchor=%22middle%22 fill=%22%23c89b4b%22 font-size=%2234%22 font-family=%22Georgia%22 font-weight=%22bold%22>S%26S</text></svg>';"
+        />
+      </div>
+      <div>
+        <div class="brand-title">Style &amp; Stich BD</div>
+        <div class="brand-sub">Bespoke Fashion Boutique</div>
+      </div>
+    </div>
+    <button class="header-pill" id="headerUserPill" onclick="goMainTab('profile')">Sign In</button>
+  </header>
+
+  <!-- 1. HOME PAGE -->
+  <section id="page-home" class="page active">
+    <div class="page-pad">
+      <div class="search-box">
+        <svg class="search-icon" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search Panjabi, Kurti, Gown, Hoodie..." oninput="renderProducts()">
+      </div>
+
+      <div class="banner-wrapper">
+        <div class="banner-track" id="bannerTrack">
+          <div class="banner-slide" style="background-image:url('https://images.unsplash.com/photo-1756483511246-12ae36997a1b?fm=jpg&q=75&w=1000&auto=format&fit=crop');">
+            <div class="banner-content">
+              <span class="banner-badge">Style &amp; Stich BD Atelier</span>
+              <h2>Luxury Festive Collection</h2>
+              <p>Authentic designer outfits &amp; custom tailoring across Bangladesh.</p>
+            </div>
+          </div>
+          <div class="banner-slide" style="background-image:url('https://images.unsplash.com/photo-1759422920287-a6d6043edaba?fm=jpg&q=75&w=1000&auto=format&fit=crop');">
+            <div class="banner-content">
+              <span class="banner-badge">Signature Panjabi</span>
+              <h2>Royal Cotton &amp; Jacquard</h2>
+              <p>Handpicked fabric with fine collar craftsmanship. Up to 25% off!</p>
+            </div>
+          </div>
+          <div class="banner-slide" style="background-image:url('https://images.unsplash.com/photo-1783597873127-761b2e74fc5b?fm=jpg&q=75&w=1000&auto=format&fit=crop');">
+            <div class="banner-content">
+              <span class="banner-badge">Nationwide Delivery</span>
+              <h2>COD, bKash &amp; Nagad Accepted</h2>
+              <p>Track every step serially from Pending to Delivered.</p>
+            </div>
+          </div>
+        </div>
+        <div class="banner-dots">
+          <div class="banner-dot active" onclick="goToBanner(0)"></div>
+          <div class="banner-dot" onclick="goToBanner(1)"></div>
+          <div class="banner-dot" onclick="goToBanner(2)"></div>
+        </div>
+      </div>
+
+      <div class="cat-strip" id="categoryStrip"></div>
+
+      <div class="section-head">
+        <h3>Featured Collection</h3>
+        <span id="productCountLabel">0 Items</span>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <!-- 2. PRODUCT DETAIL PAGE -->
+  <section id="page-product" class="page">
+    <div class="sub-header">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="sub-header-title" id="pdHeaderTitle">Product Details</div>
+    </div>
+    <div class="subpage-pad" id="pdBody"></div>
+    <div class="sticky-bottom-bar">
+      <div>
+        <div style="font-size:10.5px; color:var(--muted); font-weight:600;">Price</div>
+        <div style="font-size:17px; font-weight:800; color:var(--crimson);" id="pdStickyPrice">৳0</div>
+      </div>
+      <div class="compact-actions">
+        <button class="btn-mini-cart" onclick="detailAddToCart()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+          </svg>
+          Cart
+        </button>
+        <button class="btn-mini-order" onclick="detailOrderNow()">Order Now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. CART PAGE -->
+  <section id="page-cart" class="page">
+    <div class="page-pad">
+      <div class="section-head">
+        <h3>Shopping Bag</h3>
+        <span id="cartItemsCountText">0 Items</span>
+      </div>
+      <div id="cartContainer"></div>
+    </div>
+  </section>
+
+  <!-- 4. DELIVERY FORM PAGE (Step 1) -->
+  <section id="page-delivery" class="page">
+    <div class="sub-header">
+      <button class="back-btn" onclick="goBack()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="sub-header-title">Delivery Address</div>
+      <span class="step-pill">Step 1</span>
+    </div>
+    <div class="subpage-pad">
+      <div class="card-box" id="deliveryOrderMiniSummary"></div>
+      <form class="card-box" id="deliveryForm" onsubmit="submitDeliveryForm(event)">
+        <h4 style="font-size:15px; font-weight:800; color:var(--ink); margin-bottom:12px;">Receiver &amp; Location Details</h4>
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="delName" required placeholder="Enter full name">
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="delPhone" required placeholder="01XXXXXXXXX">
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>District</label>
+            <select id="delDistrict" required></select>
+          </div>
+          <div class="form-group">
+            <label>Upazila</label>
+            <input type="text" id="delUpazila" required placeholder="e.g. Savar">
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Union</label>
+            <input type="text" id="delUnion" required placeholder="e.g. Ashulia">
+          </div>
+          <div class="form-group">
+            <label>Village</label>
+            <input type="text" id="delVillage" required placeholder="Village / Road">
+          </div>
+        </div>
+        <button type="submit" class="btn-primary btn-gold" style="margin-top:6px;">
+          Next &rarr; Choose Payment
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- 5. PAYMENT METHOD PAGE (Step 2) -->
+  <section id="page-payment" class="page">
+    <div class="sub-header">
+      <button class="back-btn" onclick="openPage('delivery')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="sub-header-title">Select Payment Method</div>
+      <span class="step-pill">Step 2</span>
+    </div>
+    <div class="subpage-pad">
+      <div class="card-box" id="paymentAmountSummary"></div>
+
+      <div style="font-size:13px; font-weight:800; color:var(--ink); margin-bottom:10px;">Choose how you want to pay:</div>
+
+      <div class="pay-option-card selected" id="payCard-cod" onclick="selectPaymentMethod('cod')">
+        <div class="pay-icon-box pay-icon-cod">💵</div>
+        <div>
+          <h4 style="font-size:15px; font-weight:800; color:var(--ink);">Cash on Delivery</h4>
+          <p style="font-size:12px; color:var(--muted);">Pay cash when parcel arrives at your door</p>
+        </div>
+        <div class="pay-radio"></div>
+      </div>
+
+      <div class="pay-option-card is-bkash" id="payCard-bkash" onclick="selectPaymentMethod('bkash')">
+        <div class="pay-icon-box pay-icon-bkash">bKash</div>
+        <div>
+          <h4 style="font-size:15px; font-weight:800; color:var(--bkash);">bKash Payment</h4>
+          <p style="font-size:12px; color:var(--muted);">Send Money to 01744946744</p>
+        </div>
+        <div class="pay-radio"></div>
+      </div>
+
+      <div class="pay-option-card is-nagad" id="payCard-nagad" onclick="selectPaymentMethod('nagad')">
+        <div class="pay-icon-box pay-icon-nagad">Nagad</div>
+        <div>
+          <h4 style="font-size:15px; font-weight:800; color:var(--nagad);">Nagad Payment</h4>
+          <p style="font-size:12px; color:var(--muted);">Send Money to 01577783621</p>
+        </div>
+        <div class="pay-radio"></div>
+      </div>
+
+      <button class="btn-primary btn-gold" id="paymentNextBtn" style="margin-top:10px;" onclick="proceedFromPaymentMethod()">
+        Submit Order (Cash on Delivery)
+      </button>
+    </div>
+  </section>
+
+  <!-- 6. BKASH / NAGAD COPY & TRANSACTION PAGE (Step 3) -->
+  <section id="page-mfs" class="page">
+    <div class="sub-header">
+      <button class="back-btn" onclick="openPage('payment')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="sub-header-title" id="mfsHeaderTitle">Complete Payment</div>
+      <span class="step-pill">Step 3</span>
+    </div>
+    <div class="subpage-pad" id="mfsBody"></div>
+  </section>
+
+  <!-- 7. TRACKING PAGE -->
+  <section id="page-tracking" class="page">
+    <div class="page-pad">
+      <div class="section-head">
+        <h3>Delivery Tracking</h3>
+        <span id="ordersCountText">0 Orders</span>
+      </div>
+      <div id="trackingContainer"></div>
+    </div>
+  </section>
+
+  <!-- 8. ORDER DETAIL PAGE -->
+  <section id="page-order-detail" class="page">
+    <div class="sub-header">
+      <button class="back-btn" onclick="goMainTab('tracking')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="sub-header-title" id="odHeaderTitle">Order Details</div>
+    </div>
+    <div class="subpage-pad" id="odBody"></div>
+  </section>
+
+  <!-- 9. PROFILE PAGE -->
+  <section id="page-profile" class="page">
+    <div class="page-pad" id="profileContainer"></div>
+  </section>
+
+  <!-- 10. GOOGLE GMAIL CHOOSER PAGE -->
+  <section id="page-google-chooser" class="page">
+    <div class="sub-header">
+      <button class="back-btn" onclick="goMainTab('profile')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="sub-header-title">Choose a Google Account</div>
+    </div>
+    <div class="subpage-pad" id="googleChooserBody"></div>
+  </section>
+
+  <!-- 11. EDIT NAME PAGE -->
+  <section id="page-edit-name" class="page">
+    <div class="sub-header">
+      <button class="back-btn" onclick="goMainTab('profile')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="sub-header-title">Edit Account Name</div>
+    </div>
+    <div class="subpage-pad">
+      <form class="card-box" onsubmit="handleChangeName(event)">
+        <div class="form-group">
+          <label>Account Full Name</label>
+          <input type="text" id="editNameInput" required placeholder="Enter your name">
+        </div>
+        <button type="submit" class="btn-primary btn-gold">Save Changes</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- 12. SAVED DELIVERY ADDRESS PAGE -->
+  <section id="page-saved-address" class="page">
+    <div class="sub-header">
+      <button class="back-btn" onclick="goMainTab('profile')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="sub-header-title">Saved Delivery Address</div>
+    </div>
+    <div class="subpage-pad">
+      <form class="card-box" onsubmit="saveDefaultAddress(event)">
+        <div class="form-group"><label>Name</label><input type="text" id="savName" required></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="savPhone" required></div>
+        <div class="form-row-2">
+          <div class="form-group"><label>District</label><select id="savDistrict" required></select></div>
+          <div class="form-group"><label>Upazila</label><input type="text" id="savUpazila" required></div>
+        </div>
+        <div class="form-row-2">
+          <div class="form-group"><label>Union</label><input type="text" id="savUnion" required></div>
+          <div class="form-group"><label>Village</label><input type="text" id="savVillage" required></div>
+        </div>
+        <button type="submit" class="btn-primary btn-gold">Save Address</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="nav-btn active" data-tab="home" onclick="goMainTab('home')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/>
+      </svg>
+      <span>Home</span>
+    </button>
+
+    <button class="nav-btn" data-tab="cart" onclick="goMainTab('cart')">
+      <span class="cart-badge" id="navCartBadge">0</span>
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      <span>Cart</span>
+    </button>
+
+    <button class="nav-btn" data-tab="tracking" onclick="goMainTab('tracking')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/>
+        <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+      <span>Tracking</span>
+    </button>
+
+    <button class="nav-btn" data-tab="profile" onclick="goMainTab('profile')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      <span>Profile</span>
+    </button>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ========== Firebase Configuration ==========
+  const firebaseConfig = {
+    apiKey: "AIzaSyDUX4q4T21RbBDgHCyozwmvhhZaPRiMcqE",
+    authDomain: "profationstore-fbee2.firebaseapp.com",
+    databaseURL: "https://profationstore-fbee2-default-rtdb.firebaseio.com",
+    projectId: "profationstore-fbee2",
+    storageBucket: "profationstore-fbee2.firebasestorage.app",
+    messagingSenderId: "924565931381",
+    appId: "1:924565931381:web:eed6a30cf82ac9f330bf3c",
+    measurementId: "G-5H66WB7D3C"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // ========== Constants ==========
+  const BRAND_LOGO = "https://i.ibb.co.com/YTXRL2fT/file-000000005838820ba5db4496221a9716.png";
+  const GOOGLE_CLIENT_ID = "";
+  const WHATSAPP_SUPPORT_NUMBER = "8801566076407";
+  const PAYMENT_NUMBERS = {
+    bkash: "01744946744",
+    nagad: "01577783621"
+  };
+
+  const BD_DISTRICTS = [
+    "Dhaka","Chattogram","Sylhet","Rajshahi","Khulna","Barishal","Rangpur","Mymensingh",
+    "Bagerhat","Bandarban","Barguna","Bhola","Bogura","Brahmanbaria","Chandpur","Chapainawabganj",
+    "Chuadanga","Comilla","Cox's Bazar","Dinajpur","Faridpur","Feni","Gaibandha","Gazipur",
+    "Gopalganj","Habiganj","Jamalpur","Jashore","Jhalokati","Jhenaidah","Joypurhat","Khagrachari",
+    "Kishoreganj","Kurigram","Kushtia","Lakshmipur","Lalmonirhat","Madaripur","Magura","Manikganj",
+    "Meherpur","Moulvibazar","Munshiganj","Naogaon","Narail","Narayanganj","Narsingdi","Natore",
+    "Netrokona","Nilphamari","Noakhali","Pabna","Panchagarh","Patuakhali","Pirojpur","Rajbari",
+    "Rangamati","Satkhira","Shariatpur","Sherpur","Sirajganj","Sunamganj","Tangail","Thakurgaon"
+  ];
+
+  // ========== Products from Firebase (empty initially) ==========
+  let PRODUCTS = [];
+
+  const ORDER_STEPS = [
+    { key: "Pending", title: "Pending", desc: "Order received by Style & Stich BD" },
+    { key: "Confirmed", title: "Confirmed", desc: "Order verified by our team" },
+    { key: "Packing", title: "Stitching & Packing", desc: "Quality checked & packed safely" },
+    { key: "Delivery", title: "Out for Delivery", desc: "Rider is on the way to you" },
+    { key: "Delivered", title: "Delivered", desc: "Successfully handed over" }
+  ];
+
+  const STORAGE = {
+    CART: "ssbd_pro_cart_v3",
+    ORDERS: "ssbd_pro_orders_v3",
+    USERS: "ssbd_pro_users_v3",
+    CURRENT_USER: "ssbd_pro_curr_user_v3",
+    GMAILS: "ssbd_pro_gmails_v3",
+    ADDRESS: "ssbd_pro_saved_addr_v3"
+  };
+
+  let cart = JSON.parse(localStorage.getItem(STORAGE.CART) || "[]");
+  let orders = JSON.parse(localStorage.getItem(STORAGE.ORDERS) || "[]");
+  let users = JSON.parse(localStorage.getItem(STORAGE.USERS) || "[]");
+  let currentUser = JSON.parse(localStorage.getItem(STORAGE.CURRENT_USER) || "null");
+  let savedGmails = JSON.parse(localStorage.getItem(STORAGE.GMAILS) || "[]");
+  let savedAddress = JSON.parse(localStorage.getItem(STORAGE.ADDRESS) || "null");
+
+  let activeCategory = "All";
+  let bannerIndex = 0;
+  let bannerTimer = null;
+  let selectedProduct = null;
+  let selectedSize = "";
+  let currentMainTab = "home";
+  let authScreen = "login";
+
+  let checkoutDraft = {
+    mode: "cart",
+    items: [],
+    subtotal: 0,
+    deliveryFee: 60,
+    total: 0,
+    address: null,
+    paymentMethod: "cod"
+  };
+
+  // ========== Helpers ==========
+  function saveCart() { localStorage.setItem(STORAGE.CART, JSON.stringify(cart)); updateCartBadge(); }
+  function saveUsers() { localStorage.setItem(STORAGE.USERS, JSON.stringify(users)); }
+  function saveCurrentUser() { localStorage.setItem(STORAGE.CURRENT_USER, JSON.stringify(currentUser)); updateHeaderUserPill(); }
+  function saveGmails() { localStorage.setItem(STORAGE.GMAILS, JSON.stringify(savedGmails)); }
+  function persistAddress(addr) { savedAddress = addr; localStorage.setItem(STORAGE.ADDRESS, JSON.stringify(addr)); }
+
+  function escapeHtml(str) {
+    return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove("show"), 2600);
+  }
+
+  function openWhatsAppSupport(orderRef = "") {
+    const text = orderRef
+      ? `Assalamu Alaikum Style & Stich BD, I need support regarding Order ${orderRef}.`
+      : "Assalamu Alaikum Style & Stich BD, I need customer support.";
+    const url = `https://wa.me/${WHATSAPP_SUPPORT_NUMBER}?text=${encodeURIComponent(text)}`;
+    window.open(url, "_blank", "noopener");
+  }
+
+  function populateDistrictSelect(selectId, selectedVal) {
+    const sel = document.getElementById(selectId);
+    if (!sel) return;
+    sel.innerHTML = `<option value="">Select District</option>` + BD_DISTRICTS.map(d =>
+      `<option value="${d}" ${selectedVal === d ? "selected" : ""}>${d}</option>`
+    ).join("");
+  }
+
+  // ========== Navigation ==========
+  function openPage(pageId) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(`page-${pageId}`).classList.add("active");
+
+    const mainTabs = ["home", "cart", "tracking", "profile"];
+    const isMain = mainTabs.includes(pageId);
+
+    document.getElementById("mainHeader").style.display = isMain ? "flex" : "none";
+    document.getElementById("bottomNav").classList.toggle("hidden", !isMain);
+
+    if (isMain) {
+      currentMainTab = pageId;
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === pageId));
+      if (pageId === "cart") renderCart();
+      if (pageId === "tracking") renderTracking();
+      if (pageId === "profile") renderProfile();
+    }
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }
+
+  function goMainTab(tabName) { openPage(tabName); }
+  function goBack() { openPage(currentMainTab || "home"); }
+
+  function updateHeaderUserPill() {
+    document.getElementById("headerUserPill").textContent = currentUser ? currentUser.name.split(" ")[0] : "Sign In";
+  }
+
+  function updateCartBadge() {
+    document.getElementById("navCartBadge").textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+  }
+
+  // ========== Banner ==========
+  function goToBanner(idx) {
+    bannerIndex = idx;
+    document.getElementById("bannerTrack").style.transform = `translateX(-${idx * 100}%)`;
+    document.querySelectorAll(".banner-dot").forEach((d, i) => d.classList.toggle("active", i === idx));
+  }
+  function startBannerAutoScroll() {
+    clearInterval(bannerTimer);
+    bannerTimer = setInterval(() => { bannerIndex = (bannerIndex + 1) % 3; goToBanner(bannerIndex); }, 3600);
+  }
+
+  // ========== Product Rendering (from Firebase) ==========
+  function renderCategories() {
+    const cats = ["All", ...new Set(PRODUCTS.map(p => p.category).filter(Boolean))];
+    document.getElementById("categoryStrip").innerHTML = cats.map(c =>
+      `<button class="cat-chip ${activeCategory === c ? "active" : ""}" onclick="setCategory('${c}')">${c}</button>`
+    ).join("");
+  }
+  function setCategory(cat) { activeCategory = cat; renderCategories(); renderProducts(); }
+
+  function renderProducts() {
+    const query = document.getElementById("searchInput").value.trim().toLowerCase();
+    const filtered = PRODUCTS.filter(p => {
+      const matchCat = activeCategory === "All" || p.category === activeCategory;
+      const matchSearch = !query || p.name.toLowerCase().includes(query) || (p.category || "").toLowerCase().includes(query);
+      return matchCat && matchSearch;
+    });
+    document.getElementById("productCountLabel").textContent = `${filtered.length} Items`;
+    const grid = document.getElementById("productGrid");
+
+    if (!filtered.length) {
+      if (!PRODUCTS.length) {
+        // No products in database
+        grid.innerHTML = `<div style="grid-column:1/-1;">
+          ${getFloatingLogoBagHtml("No Products Available", "New collection coming soon! Stay tuned for our latest arrivals.", "Refresh")}
+        </div>`;
+      } else {
+        grid.innerHTML = `<div class="brand-empty-stage" style="grid-column:1/-1;">
+          <h4 style="margin-bottom:6px;">No Matching Products</h4>
+          <p style="font-size:13px; color:var(--muted);">Try another keyword or category.</p>
+        </div>`;
+      }
+      return;
+    }
+
+    grid.innerHTML = filtered.map(p => {
+      const off = (p.oldPrice && p.oldPrice > p.price) ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0;
+      const img = (Array.isArray(p.images) && p.images[0]) ? p.images[0] : (p.image || "");
+      return `
+        <div class="product-card" onclick="openProductPage('${p.id}')">
+          <div class="product-img-box">
+            <img src="${img}" alt="${escapeHtml(p.name)}" loading="lazy"
+                 onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 220%22><rect width=%22200%22 height=%22220%22 fill=%22%23efeae2%22/><text x=%22100%22 y=%22115%22 text-anchor=%22middle%22 fill=%22%236b7280%22 font-size=%2214%22 font-family=%22sans-serif%22>No Image</text></svg>';">
+            ${off > 0 ? `<span class="discount-tag">-${off}%</span>` : ""}
+            <span class="rating-pill">★ ${p.rating || "5.0"}</span>
+          </div>
+          <div class="product-info">
+            <div class="product-cat">${escapeHtml(p.category || "Collection")}</div>
+            <div class="product-title">${escapeHtml(p.name)}</div>
+            <div class="price-row">
+              <span class="price-now">৳${p.price}</span>
+              ${p.oldPrice ? `<span class="price-old">৳${p.oldPrice}</span>` : ""}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  // ========== Product Detail ==========
+  function openProductPage(productId) {
+    selectedProduct = PRODUCTS.find(p => String(p.id) === String(productId));
+    if (!selectedProduct) return;
+    const sizes = selectedProduct.sizes || [];
+    selectedSize = sizes.length ? sizes[0] : "";
+
+    document.getElementById("pdHeaderTitle").textContent = selectedProduct.name;
+    document.getElementById("pdStickyPrice").textContent = `৳${selectedProduct.price}`;
+
+    const images = Array.isArray(selectedProduct.images) && selectedProduct.images.length
+      ? selectedProduct.images
+      : (selectedProduct.image ? [selectedProduct.image] : []);
+
+    document.getElementById("pdBody").innerHTML = `
+      <div class="gallery-main">
+        <img id="pdMainImg" src="${images[0] || ''}" alt="${escapeHtml(selectedProduct.name)}"
+             onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22><rect width=%22400%22 height=%22400%22 fill=%22%23efeae2%22/></svg>';">
+      </div>
+      <div class="gallery-thumbs">
+        ${images.map((img, i) => `
+          <div class="gallery-thumb ${i === 0 ? "active" : ""}" onclick="selectGalleryImg(${i}, this)">
+            <img src="${img}" alt="Photo ${i+1}">
+          </div>
+        `).join("")}
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <span style="font-size:11.5px; font-weight:700; color:var(--gold-dark); text-transform:uppercase;">${escapeHtml(selectedProduct.category || "Collection")}</span>
+        ${selectedProduct.oldPrice ? `<span style="font-size:12px; color:var(--muted); text-decoration:line-through;">MRP ৳${selectedProduct.oldPrice}</span>` : ""}
+      </div>
+      <h2 style="font-size:19px; font-weight:800; color:var(--ink); margin-bottom:12px;">${escapeHtml(selectedProduct.name)}</h2>
+
+      ${sizes.length ? `
+        <div style="font-size:12.5px; font-weight:700; color:var(--ink);">Select Size</div>
+        <div class="size-row" id="pdSizeRow">
+          ${sizes.map(s => `<button class="size-pill ${s === selectedSize ? "active" : ""}" onclick="chooseSize('${s}', this)">${s}</button>`).join("")}
+        </div>
+      ` : ""}
+
+      <div style="font-size:12.5px; font-weight:700; color:var(--ink); margin-bottom:6px;">Product Description</div>
+      <div class="detail-desc">${escapeHtml(selectedProduct.description || "No description provided.")}</div>
+    `;
+
+    openPage("product");
+  }
+
+  function selectGalleryImg(index, thumbEl) {
+    const images = Array.isArray(selectedProduct.images) && selectedProduct.images.length
+      ? selectedProduct.images
+      : [selectedProduct.image];
+    document.getElementById("pdMainImg").src = images[index];
+    document.querySelectorAll(".gallery-thumb").forEach(el => el.classList.remove("active"));
+    thumbEl.classList.add("active");
+  }
+
+  function chooseSize(size, btnEl) {
+    selectedSize = size;
+    document.querySelectorAll("#pdSizeRow .size-pill").forEach(el => el.classList.remove("active"));
+    btnEl.classList.add("active");
+  }
+
+  function detailAddToCart() {
+    if (!selectedProduct) return;
+    const existing = cart.find(i => String(i.productId) === String(selectedProduct.id) && i.size === selectedSize);
+    if (existing) existing.qty += 1;
+    else cart.push({ productId: selectedProduct.id, size: selectedSize, qty: 1 });
+    saveCart();
+    showToast("Added to Shopping Bag!");
+  }
+
+  function detailOrderNow() {
+    if (!selectedProduct) return;
+    startCheckoutFlow("direct");
+  }
+
+  // ========== Empty State ==========
+  function getFloatingLogoBagHtml(title, subtitle, btnText) {
+    return `
+      <div class="brand-empty-stage">
+        <div class="float-scene">
+          <div class="float-actor">
+            <svg width="112" height="122" viewBox="0 0 112 122" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M36 36V26C36 14.954 44.954 6 56 6C67.046 6 76 14.954 76 26V36" stroke="#c89b4b" stroke-width="5.5" stroke-linecap="round"/>
+              <path d="M16 36H96L104 108C104.5 112.5 101 116 96.5 116H15.5C11 116 7.5 112.5 8 108L16 36Z" fill="#111318" stroke="#c89b4b" stroke-width="2.5"/>
+              <path d="M16 36H96L94 46H18L16 36Z" fill="#232732"/>
+            </svg>
+            <div class="bag-logo-badge"><img src="${BRAND_LOGO}" alt="Style & Stich BD"></div>
+          </div>
+          <div class="float-shadow"></div>
+        </div>
+        <h4 style="font-size:17px; font-weight:800; color:var(--ink); margin-bottom:6px;">${title}</h4>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">${subtitle}</p>
+        <button class="btn-primary" onclick="${btnText === 'Refresh' ? 'location.reload()' : "goMainTab('home')"}">${btnText}</button>
+      </div>
+    `;
+  }
+
+  // ========== Cart Page ==========
+  function renderCart() {
+    const container = document.getElementById("cartContainer");
+    const totalCount = cart.reduce((s, i) => s + i.qty, 0);
+    document.getElementById("cartItemsCountText").textContent = `${totalCount} Items`;
+
+    if (!cart.length) {
+      container.innerHTML = getFloatingLogoBagHtml(
+        "Your Shopping Bag is Empty",
+        "Style & Stich BD bag is waiting for your favourite outfits!",
+        "Explore Collection"
+      );
+      return;
+    }
+
+    let subtotal = 0;
+    const itemsHtml = cart.map((item, idx) => {
+      const prod = PRODUCTS.find(p => String(p.id) === String(item.productId));
+      if (!prod) return "";
+      const lineTotal = prod.price * item.qty;
+      subtotal += lineTotal;
+      const img = (Array.isArray(prod.images) && prod.images[0]) ? prod.images[0] : (prod.image || "");
+      return `
+        <div class="cart-item">
+          <img src="${img}" alt="${escapeHtml(prod.name)}" onclick="openProductPage('${prod.id}')">
+          <div class="cart-item-body">
+            <div class="cart-item-title">${escapeHtml(prod.name)}</div>
+            <div class="cart-item-meta">Size: <b>${escapeHtml(item.size || "N/A")}</b> • ৳${prod.price}</div>
+            <div class="cart-controls">
+              <div class="qty-box">
+                <button class="qty-btn" onclick="changeCartQty(${idx}, -1)">-</button>
+                <span style="font-size:13px; font-weight:700; min-width:18px; text-align:center;">${item.qty}</span>
+                <button class="qty-btn" onclick="changeCartQty(${idx}, 1)">+</button>
+              </div>
+              <strong style="font-size:14px; color:var(--crimson);">৳${lineTotal}</strong>
+              <button class="remove-btn" onclick="removeCartItem(${idx})">Remove</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    const deliveryFee = 60;
+    container.innerHTML = `
+      <div class="cart-list">${itemsHtml}</div>
+      <div class="summary-card">
+        <div class="summary-line"><span>Subtotal</span><span>৳${subtotal}</span></div>
+        <div class="summary-line"><span>Delivery Charge</span><span>৳${deliveryFee}</span></div>
+        <div class="summary-line total"><span>Total Payable</span><span>৳${subtotal + deliveryFee}</span></div>
+        <button class="btn-primary btn-gold" style="margin-top:12px;" onclick="startCheckoutFlow('cart')">
+          Proceed to Delivery Form &rarr;
+        </button>
+      </div>
+    `;
+  }
+
+  function changeCartQty(idx, delta) {
+    if (!cart[idx]) return;
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    saveCart();
+    renderCart();
+  }
+  function removeCartItem(idx) { cart.splice(idx, 1); saveCart(); renderCart(); showToast("Item removed"); }
+
+  // ========== Checkout ==========
+  function startCheckoutFlow(mode) {
+    checkoutDraft.mode = mode;
+    checkoutDraft.deliveryFee = 60;
+
+    if (mode === "direct" && selectedProduct) {
+      const img = (Array.isArray(selectedProduct.images) && selectedProduct.images[0]) ? selectedProduct.images[0] : (selectedProduct.image || "");
+      checkoutDraft.items = [{
+        productId: selectedProduct.id,
+        name: selectedProduct.name,
+        price: selectedProduct.price,
+        size: selectedSize || "",
+        qty: 1,
+        image: img
+      }];
+    } else {
+      if (!cart.length) return;
+      checkoutDraft.items = cart.map(i => {
+        const p = PRODUCTS.find(x => String(x.id) === String(i.productId));
+        const img = (Array.isArray(p.images) && p.images[0]) ? p.images[0] : (p.image || "");
+        return { productId: p.id, name: p.name, price: p.price, size: i.size, qty: i.qty, image: img };
+      });
+    }
+
+    checkoutDraft.subtotal = checkoutDraft.items.reduce((s, x) => s + x.price * x.qty, 0);
+    checkoutDraft.total = checkoutDraft.subtotal + checkoutDraft.deliveryFee;
+
+    const totalQty = checkoutDraft.items.reduce((s, x) => s + x.qty, 0);
+    document.getElementById("deliveryOrderMiniSummary").innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-size:12px; color:var(--muted); font-weight:600;">Order Summary (${totalQty} item${totalQty>1?'s':''})</div>
+          <div style="font-size:13.5px; font-weight:700; color:var(--ink);">${escapeHtml(checkoutDraft.items[0].name)}${checkoutDraft.items.length>1 ? ` + ${checkoutDraft.items.length-1} more` : ''}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px; color:var(--muted);">Incl. ৳60 delivery</div>
+          <div style="font-size:16px; font-weight:800; color:var(--crimson);">৳${checkoutDraft.total}</div>
+        </div>
+      </div>
+    `;
+
+    const pre = savedAddress || {};
+    document.getElementById("delName").value = pre.name || (currentUser ? currentUser.name : "");
+    document.getElementById("delPhone").value = pre.phone || (currentUser && currentUser.phone ? currentUser.phone : "");
+    populateDistrictSelect("delDistrict", pre.district || "");
+    document.getElementById("delUpazila").value = pre.upazila || "";
+    document.getElementById("delUnion").value = pre.union || "";
+    document.getElementById("delVillage").value = pre.village || "";
+
+    openPage("delivery");
+  }
+
+  function submitDeliveryForm(e) {
+    e.preventDefault();
+    const addr = {
+      name: document.getElementById("delName").value.trim(),
+      phone: document.getElementById("delPhone").value.trim(),
+      district: document.getElementById("delDistrict").value.trim(),
+      upazila: document.getElementById("delUpazila").value.trim(),
+      union: document.getElementById("delUnion").value.trim(),
+      village: document.getElementById("delVillage").value.trim()
+    };
+
+    if (!addr.name || !addr.phone || !addr.district || !addr.upazila || !addr.union || !addr.village) {
+      return showToast("Please fill all delivery address fields");
+    }
+
+    checkoutDraft.address = addr;
+    persistAddress(addr);
+
+    document.getElementById("paymentAmountSummary").innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-size:12px; color:var(--muted);">Deliver to: <b>${escapeHtml(addr.name)}</b></div>
+          <div style="font-size:11.5px; color:var(--muted);">${escapeHtml(addr.village)}, ${escapeHtml(addr.union)}, ${escapeHtml(addr.upazila)}, ${escapeHtml(addr.district)}</div>
+        </div>
+        <div style="font-size:17px; font-weight:800; color:var(--crimson);">৳${checkoutDraft.total}</div>
+      </div>
+    `;
+
+    selectPaymentMethod(checkoutDraft.paymentMethod || "cod");
+    openPage("payment");
+  }
+
+  function selectPaymentMethod(method) {
+    checkoutDraft.paymentMethod = method;
+    ["cod", "bkash", "nagad"].forEach(m => {
+      document.getElementById(`payCard-${m}`).classList.toggle("selected", m === method);
+    });
+
+    const btn = document.getElementById("paymentNextBtn");
+    if (method === "cod") btn.textContent = "Submit Order (Cash on Delivery)";
+    else if (method === "bkash") btn.textContent = "Next → Pay with bKash";
+    else btn.textContent = "Next → Pay with Nagad";
+  }
+
+  function proceedFromPaymentMethod() {
+    const m = checkoutDraft.paymentMethod;
+    if (m === "cod") {
+      finalizeOrder("Cash on Delivery", "");
+      return;
+    }
+
+    const isBkash = m === "bkash";
+    const number = PAYMENT_NUMBERS[m];
+    const label = isBkash ? "bKash" : "Nagad";
+
+    document.getElementById("mfsHeaderTitle").textContent = `${label} Payment`;
+    document.getElementById("mfsBody").innerHTML = `
+      <div class="mfs-hero-box ${m}">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; opacity:0.9;">Send Money via ${label}</div>
+        <div style="font-size:28px; font-weight:800; margin:6px 0;">৳${checkoutDraft.total}</div>
+        <div style="font-size:12px; opacity:0.92;">Copy the ${label} number below, send <b>৳${checkoutDraft.total}</b>, then enter your Transaction ID.</div>
+
+        <div class="copy-number-pill">
+          <div style="text-align:left;">
+            <div style="font-size:10.5px; opacity:0.85;">${label} Personal Number</div>
+            <div style="font-size:19px; font-weight:800; letter-spacing:0.6px;">${number}</div>
+          </div>
+          <button type="button" class="copy-btn" onclick="copyNumber('${number}', '${label}')">Copy Number</button>
+        </div>
+      </div>
+
+      <form class="card-box" onsubmit="submitMfsOrder(event, '${label}')">
+        <div class="form-group">
+          <label>${label} Transaction ID (TrxID)</label>
+          <input type="text" id="mfsTrxId" required placeholder="e.g. 9K7A4M2P1X" style="text-transform:uppercase; font-weight:700;">
+        </div>
+        <div class="form-group">
+          <label>Your ${label} Sender Number (Optional)</label>
+          <input type="tel" id="mfsSenderPhone" placeholder="01XXXXXXXXX">
+        </div>
+        <button type="submit" class="btn-primary btn-gold">Submit ${label} Payment &amp; Order</button>
+      </form>
+    `;
+
+    openPage("mfs");
+  }
+
+  function copyNumber(num, label) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(num).then(() => showToast(`${label} number ${num} copied!`)).catch(() => fallbackCopy(num, label));
+    } else {
+      fallbackCopy(num, label);
+    }
+  }
+
+  function fallbackCopy(num, label) {
+    const ta = document.createElement("textarea");
+    ta.value = num;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); showToast(`${label} number ${num} copied!`); }
+    catch { showToast(`Number: ${num}`); }
+    document.body.removeChild(ta);
+  }
+
+  function submitMfsOrder(e, label) {
+    e.preventDefault();
+    const trx = document.getElementById("mfsTrxId").value.trim().toUpperCase();
+    const sender = document.getElementById("mfsSenderPhone").value.trim();
+    if (!trx || trx.length < 4) return showToast("Please enter valid Transaction ID!");
+    finalizeOrder(label, trx, sender);
+  }
+
+  // ========== Save Order to Firebase ==========
+  function finalizeOrder(paymentMethodLabel, trxId, senderPhone = "") {
+    if (checkoutDraft.mode === "cart") {
+      cart = [];
+      saveCart();
+    }
+
+    const a = checkoutDraft.address;
+    const fullAddress = `${a.village}, ${a.union}, ${a.upazila}, ${a.district}`;
+    const orderId = "SSB-" + Math.floor(100000 + Math.random() * 900000);
+
+    const newOrder = {
+      orderId: orderId,
+      serial: orders.length + 1,
+      date: new Date().toLocaleString(),
+      items: checkoutDraft.items,
+      subtotal: checkoutDraft.subtotal,
+      deliveryFee: checkoutDraft.deliveryFee,
+      total: checkoutDraft.total,
+      status: "Pending",
+      customerName: a.name,
+      customerPhone: a.phone,
+      addressDetails: a,
+      address: fullAddress,
+      paymentMethod: paymentMethodLabel,
+      trxId: trxId || "",
+      senderPhone: senderPhone || "",
+      createdAt: Date.now()
+    };
+
+    // Save locally for instant UI
+    orders.push(newOrder);
+    localStorage.setItem(STORAGE.ORDERS, JSON.stringify(orders));
+
+    // Push to Firebase Realtime Database
+    db.ref("orders/" + orderId).set(newOrder).catch(err => {
+      console.error("Firebase order save failed:", err);
+      showToast("Order saved locally, sync failed.");
+    });
+
+    showToast("Order Placed Successfully!");
+    openOrderDetailPage(orderId);
+  }
+
+  // ========== Tracking (reads local + listens Firebase) ==========
+  function renderTracking() {
+    const container = document.getElementById("trackingContainer");
+    document.getElementById("ordersCountText").textContent = `${orders.length} Orders`;
+
+    if (!orders.length) {
+      container.innerHTML = getFloatingLogoBagHtml(
+        "No Active Deliveries",
+        "Your Style & Stich BD parcel tracking will float right here serial by serial.",
+        "Shop Outfits"
+      );
+      return;
+    }
+
+    const headerBanner = `
+      <div class="tracking-brand-banner">
+        <div class="mini-float-bag"><img src="${BRAND_LOGO}" alt="Logo"></div>
+        <div>
+          <div style="font-size:13.5px; font-weight:800; color:var(--gold-light);">Style &amp; Stich BD Express</div>
+          <div style="font-size:11.5px; color:#cbd5e1;">Tap any serial order below to open full details.</div>
+        </div>
+      </div>
+    `;
+
+    const listHtml = orders.map((ord, idx) => {
+      const serialNum = ord.serial || (idx + 1);
+      const firstItem = ord.items[0];
+      const extra = ord.items.length - 1;
+      const statusLabel = ord.status === "Delivery" ? "Out for Delivery" : ord.status;
+
+      return `
+        <div class="order-card" onclick="openOrderDetailPage('${ord.orderId}')">
+          <div class="order-top">
+            <span class="serial-badge">Serial #${serialNum} • ${ord.orderId}</span>
+            <span class="status-pill st-${ord.status}">${statusLabel}</span>
+          </div>
+          <div class="order-preview">
+            <img src="${firstItem.image}" alt="${escapeHtml(firstItem.name)}">
+            <div class="order-meta">
+              <h4>${escapeHtml(firstItem.name)}${extra > 0 ? ` + ${extra} more` : ""}</h4>
+              <p>Total: <b style="color:var(--crimson);">৳${ord.total}</b> • ${escapeHtml(ord.paymentMethod || "Cash on Delivery")}</p>
+              <p>${escapeHtml(ord.customerName)} • ${escapeHtml(ord.addressDetails ? ord.addressDetails.district : "")}</p>
+            </div>
+          </div>
+          <div class="tap-hint">Tap to open order page &rarr;</div>
+        </div>
+      `;
+    }).join("");
+
+    container.innerHTML = headerBanner + listHtml;
+  }
+
+  // ========== Order Detail ==========
+  function openOrderDetailPage(orderId) {
+    const ord = orders.find(o => o.orderId === orderId);
+    if (!ord) return;
+
+    document.getElementById("odHeaderTitle").textContent = `Serial #${ord.serial} • ${ord.orderId}`;
+    const currentStepIdx = ORDER_STEPS.findIndex(s => s.key === ord.status);
+
+    const itemsHtml = ord.items.map(it => `
+      <div style="display:flex; gap:10px; align-items:center; padding:10px; background:var(--bg); border-radius:12px; border:1px solid var(--border); margin-bottom:8px;">
+        <img src="${it.image}" style="width:66px; height:70px; border-radius:10px; object-fit:cover; object-position:top center;">
+        <div style="flex:1;">
+          <div style="font-size:13.5px; font-weight:700; color:var(--ink);">${escapeHtml(it.name)}</div>
+          <div style="font-size:12px; color:var(--muted);">Size: ${escapeHtml(it.size || "N/A")} • Qty: ${it.qty}</div>
+          <div style="font-size:13.5px; font-weight:800; color:var(--crimson); margin-top:2px;">৳${it.price * it.qty}</div>
+        </div>
+      </div>
+    `).join("");
+
+    const timelineHtml = ORDER_STEPS.map((st, idx) => {
+      let cls = "";
+      if (idx < currentStepIdx) cls = "done";
+      else if (idx === currentStepIdx) cls = "current";
+      return `<div class="tl-step ${cls}"><span class="tl-dot"></span><h5>${st.title}</h5><p>${st.desc}</p></div>`;
+    }).join("");
+
+    const ad = ord.addressDetails;
+    const addressBlock = ad
+      ? `<b>District:</b> ${escapeHtml(ad.district)}, <b>Upazila:</b> ${escapeHtml(ad.upazila)}<br><b>Union:</b> ${escapeHtml(ad.union)}, <b>Village:</b> ${escapeHtml(ad.village)}`
+      : escapeHtml(ord.address);
+
+    document.getElementById("odBody").innerHTML = `
+      <div class="card-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:12px; color:var(--muted);">${ord.date}</span>
+          <span class="status-pill st-${ord.status}">${ord.status === "Delivery" ? "Out for Delivery" : ord.status}</span>
+        </div>
+        ${itemsHtml}
+      </div>
+
+      <div class="card-box" style="font-size:12.5px; line-height:1.65;">
+        <h4 style="font-size:14px; font-weight:800; margin-bottom:6px; color:var(--ink);">Delivery &amp; Payment Info</h4>
+        <div><b>Receiver:</b> ${escapeHtml(ord.customerName)} (${escapeHtml(ord.customerPhone)})</div>
+        <div>${addressBlock}</div>
+        <div style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--border);">
+          <b>Payment Method:</b> ${escapeHtml(ord.paymentMethod || "Cash on Delivery")}
+          ${ord.trxId ? `<br><b>Transaction ID:</b> <span style="color:var(--crimson); font-weight:800;">${escapeHtml(ord.trxId)}</span>` : ""}
+          <br><b>Total Payable:</b> <span style="color:var(--crimson); font-weight:800;">৳${ord.total}</span>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <h4 style="font-size:14px; font-weight:800; color:var(--ink);">Live Delivery Progress</h4>
+        <div class="timeline">${timelineHtml}</div>
+        ${ord.status === "Delivered"
+          ? `<div style="text-align:center; font-size:13px; font-weight:700; color:var(--success); padding-top:10px;">✓ Order Delivered Successfully!</div>`
+          : `<div style="margin-top:12px; padding:11px; border-radius:12px; background:var(--bg); border:1px solid var(--border); font-size:12px; color:var(--muted); display:flex; align-items:center; justify-content:space-between; gap:8px;">
+               <span>Need help with this order?</span>
+               <button type="button" onclick="openWhatsAppSupport('${escapeHtml(ord.orderId)}')" style="border:none; background:#16a34a; color:#fff; font-family:inherit; font-size:11.5px; font-weight:700; padding:7px 11px; border-radius:8px; cursor:pointer; white-space:nowrap;">WhatsApp Us</button>
+             </div>`}
+      </div>
+    `;
+
+    openPage("order-detail");
+  }
+
+  // ========== Profile (unchanged) ==========
+  function renderProfile() {
+    const container = document.getElementById("profileContainer");
+
+    if (!currentUser) {
+      container.innerHTML = `
+        <div class="profile-logo-hero">
+          <div class="ambient-logo-bg"></div>
+          <div class="hero-inner">
+            <div class="medallion-logo"><img src="${BRAND_LOGO}" alt="Style & Stich BD"></div>
+            <h2>Style &amp; Stich BD</h2>
+            <p>Crafted with Elegance • Sign In to Continue</p>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <button class="google-btn" onclick="triggerGoogleSignIn()">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
+            </svg>
+            Continue with Google
+          </button>
+
+          <div class="divider-or">OR USE MOBILE NUMBER</div>
+
+          <div class="auth-switch-btns">
+            <button class="auth-tab-btn ${authScreen === 'login' ? 'active' : ''}" onclick="setAuthScreen('login')">Login</button>
+            <button class="auth-tab-btn ${authScreen === 'signup' ? 'active' : ''}" onclick="setAuthScreen('signup')">Sign Up</button>
+          </div>
+
+          ${authScreen === 'login' ? `
+            <form onsubmit="handleLogin(event)">
+              <div class="form-group"><label>Phone No</label><input type="tel" id="loginPhone" required placeholder="01XXXXXXXXX"></div>
+              <div class="form-group"><label>Password</label><input type="password" id="loginPass" required placeholder="Enter password"></div>
+              <button type="submit" class="btn-primary">Login</button>
+            </form>
+          ` : `
+            <form onsubmit="handleSignUp(event)">
+              <div class="form-group"><label>Name</label><input type="text" id="regName" required placeholder="Your full name"></div>
+              <div class="form-group"><label>Mobile No</label><input type="tel" id="regPhone" required placeholder="01XXXXXXXXX"></div>
+              <div class="form-group"><label>Password</label><input type="password" id="regPass" required minlength="4" placeholder="Create password"></div>
+              <div class="form-group"><label>Confirm Password</label><input type="password" id="regConfirmPass" required minlength="4" placeholder="Re-type password"></div>
+              <button type="submit" class="btn-primary btn-gold">Create Account</button>
+            </form>
+          `}
+        </div>
+      `;
+      return;
+    }
+
+    const initial = currentUser.name.charAt(0).toUpperCase();
+    const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+    const activeOrdersCount = orders.filter(o => o.status !== "Delivered").length;
+    const identity = currentUser.email ? currentUser.email : currentUser.phone;
+    const addrSubtitle = savedAddress ? `${savedAddress.village}, ${savedAddress.upazila}, ${savedAddress.district}` : "Set your default delivery address";
+
+    container.innerHTML = `
+      <div class="vip-card">
+        <div class="ambient-logo-bg" style="opacity:0.25;"></div>
+        <div class="vip-row">
+          <div class="vip-avatar">${escapeHtml(initial)}</div>
+          <div style="flex:1; min-width:0;">
+            <span class="vip-badge">${currentUser.provider === 'google' ? '✓ Google Verified VIP' : '✓ Style & Stich VIP'}</span>
+            <h3 style="font-size:18px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(currentUser.name)}</h3>
+            <p style="font-size:12px; color:#cbd5e1;">${escapeHtml(identity)}</p>
+          </div>
+          <img src="${BRAND_LOGO}" style="width:42px; height:42px; border-radius:50%; border:2px solid var(--gold); object-fit:cover; background:#fff;">
+        </div>
+        <div class="vip-stats">
+          <div class="vip-stat" onclick="goMainTab('tracking')"><strong>${orders.length}</strong><span>Total Orders</span></div>
+          <div class="vip-stat" onclick="goMainTab('tracking')"><strong>${activeOrdersCount}</strong><span>In Progress</span></div>
+          <div class="vip-stat" onclick="goMainTab('cart')"><strong>${cartCount}</strong><span>In Bag</span></div>
+        </div>
+      </div>
+
+      <div class="section-head" style="margin-top:4px;">
+        <h3>Account Dashboard</h3>
+        <span>Pro Menu</span>
+      </div>
+
+      <div class="pro-menu">
+        <div class="pro-menu-item" onclick="goMainTab('tracking')">
+          <span class="menu-num">01</span>
+          <div class="menu-icon">📦</div>
+          <div class="menu-text">
+            <h4>My Orders &amp; Delivery Tracking</h4>
+            <p>${orders.length} serial order(s) • Track Pending to Delivered</p>
+          </div>
+          <span style="color:var(--muted); font-weight:800;">&rsaquo;</span>
+        </div>
+
+        <div class="pro-menu-item" onclick="goMainTab('cart')">
+          <span class="menu-num">02</span>
+          <div class="menu-icon">🛍️</div>
+          <div class="menu-text">
+            <h4>My Shopping Bag</h4>
+            <p>${cartCount} item(s) saved permanently in your bag</p>
+          </div>
+          <span style="color:var(--muted); font-weight:800;">&rsaquo;</span>
+        </div>
+
+        <div class="pro-menu-item" onclick="openSavedAddressPage()">
+          <span class="menu-num">03</span>
+          <div class="menu-icon">📍</div>
+          <div class="menu-text">
+            <h4>Saved Delivery Address</h4>
+            <p>${escapeHtml(addrSubtitle)}</p>
+          </div>
+          <span style="color:var(--muted); font-weight:800;">&rsaquo;</span>
+        </div>
+
+        <div class="pro-menu-item" onclick="openEditNamePage()">
+          <span class="menu-num">04</span>
+          <div class="menu-icon">✏️</div>
+          <div class="menu-text">
+            <h4>Change Account Name</h4>
+            <p>Currently: ${escapeHtml(currentUser.name)}</p>
+          </div>
+          <span style="color:var(--muted); font-weight:800;">&rsaquo;</span>
+        </div>
+
+        <div class="pro-menu-item" onclick="openWhatsAppSupport()">
+          <span class="menu-num">05</span>
+          <div class="menu-icon" style="background:#dcfce7; color:#15803d;">💬</div>
+          <div class="menu-text">
+            <h4>Customer Support (WhatsApp)</h4>
+            <p>Chat directly on WhatsApp: 01566076407</p>
+          </div>
+          <span style="color:#15803d; font-weight:800;">&rsaquo;</span>
+        </div>
+
+        <div class="pro-menu-item danger" onclick="handleLogout()">
+          <span class="menu-num">06</span>
+          <div class="menu-icon">🚪</div>
+          <div class="menu-text">
+            <h4>Log Out</h4>
+            <p>Sign out safely from Style &amp; Stich BD</p>
+          </div>
+          <span style="color:#dc2626; font-weight:800;">&rsaquo;</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function openEditNamePage() {
+    document.getElementById("editNameInput").value = currentUser ? currentUser.name : "";
+    openPage("edit-name");
+  }
+
+  function handleChangeName(e) {
+    e.preventDefault();
+    const newName = document.getElementById("editNameInput").value.trim();
+    if (!newName || !currentUser) return;
+    currentUser.name = newName;
+
+    if (currentUser.phone) {
+      const u = users.find(x => x.phone === currentUser.phone);
+      if (u) { u.name = newName; saveUsers(); }
+    }
+    if (currentUser.email) {
+      const g = savedGmails.find(x => x.email === currentUser.email);
+      if (g) { g.name = newName; saveGmails(); }
+    }
+    saveCurrentUser();
+    showToast("Name updated successfully!");
+    goMainTab("profile");
+  }
+
+  function openSavedAddressPage() {
+    const pre = savedAddress || {};
+    document.getElementById("savName").value = pre.name || (currentUser ? currentUser.name : "");
+    document.getElementById("savPhone").value = pre.phone || (currentUser && currentUser.phone ? currentUser.phone : "");
+    populateDistrictSelect("savDistrict", pre.district || "");
+    document.getElementById("savUpazila").value = pre.upazila || "";
+    document.getElementById("savUnion").value = pre.union || "";
+    document.getElementById("savVillage").value = pre.village || "";
+    openPage("saved-address");
+  }
+
+  function saveDefaultAddress(e) {
+    e.preventDefault();
+    persistAddress({
+      name: document.getElementById("savName").value.trim(),
+      phone: document.getElementById("savPhone").value.trim(),
+      district: document.getElementById("savDistrict").value.trim(),
+      upazila: document.getElementById("savUpazila").value.trim(),
+      union: document.getElementById("savUnion").value.trim(),
+      village: document.getElementById("savVillage").value.trim()
+    });
+    showToast("Default address saved!");
+    goMainTab("profile");
+  }
+
+  // ========== Google Sign-In ==========
+  function triggerGoogleSignIn() {
+    if (GOOGLE_CLIENT_ID && window.google && google.accounts && google.accounts.id && location.protocol.startsWith("http")) {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: (response) => {
+          try {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            loginWithGmailAccount(payload.name, payload.email);
+          } catch { openLocalGmailChooserPage(); }
+        }
+      });
+      google.accounts.id.prompt();
+      return;
+    }
+    openLocalGmailChooserPage();
+  }
+
+  function openLocalGmailChooserPage() {
+    const listHtml = savedGmails.length
+      ? savedGmails.map((acc, idx) => `
+          <div class="gmail-account-item" onclick="selectSavedGmail(${idx})">
+            <div class="gmail-avatar">${escapeHtml(acc.name.charAt(0).toUpperCase())}</div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:14px; font-weight:700; color:var(--ink);">${escapeHtml(acc.name)}</div>
+              <div style="font-size:12px; color:var(--muted);">${escapeHtml(acc.email)}</div>
+            </div>
+            <span style="font-size:12px; color:#1a73e8; font-weight:700;">Select</span>
+          </div>
+        `).join("")
+      : `<div class="card-box" style="text-align:center; color:var(--muted); font-size:13px;">
+           Add your phone's Gmail below once — next time it will show here for 1-tap login!
+         </div>`;
+
+    document.getElementById("googleChooserBody").innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+        <img src="${BRAND_LOGO}" style="width:38px; height:38px; border-radius:10px; object-fit:cover; border:1px solid var(--border);">
+        <div style="font-size:13px; color:var(--muted);">Sign in to continue to <b>Style &amp; Stich BD</b></div>
+      </div>
+      ${listHtml}
+      <form class="card-box" onsubmit="addAndLoginGmail(event)">
+        <h4 style="font-size:14px; font-weight:800; color:var(--ink); margin-bottom:10px;">Use another Gmail account</h4>
+        <div class="form-group"><label>Your Name</label><input type="text" id="gNameInput" required placeholder="e.g. Rahim Uddin"></div>
+        <div class="form-group"><label>Gmail Address</label><input type="email" id="gEmailInput" required placeholder="yourname@gmail.com"></div>
+        <button type="submit" class="btn-primary" style="background:#1a73e8; color:#fff;">Continue with Gmail</button>
+      </form>
+    `;
+    openPage("google-chooser");
+  }
+
+  function selectSavedGmail(idx) {
+    const acc = savedGmails[idx];
+    if (acc) loginWithGmailAccount(acc.name, acc.email);
+  }
+
+  function addAndLoginGmail(e) {
+    e.preventDefault();
+    const name = document.getElementById("gNameInput").value.trim();
+    const email = document.getElementById("gEmailInput").value.trim().toLowerCase();
+    if (!email.includes("@")) return showToast("Enter a valid Gmail address!");
+    if (!savedGmails.some(g => g.email === email)) {
+      savedGmails.push({ name, email });
+      saveGmails();
+    }
+    loginWithGmailAccount(name, email);
+  }
+
+  function loginWithGmailAccount(name, email) {
+    currentUser = { name, email, phone: "", provider: "google" };
+    saveCurrentUser();
+    showToast(`Signed in as ${email}`);
+    goMainTab("profile");
+  }
+
+  function setAuthScreen(mode) { authScreen = mode; renderProfile(); }
+
+  function handleSignUp(e) {
+    e.preventDefault();
+    const name = document.getElementById("regName").value.trim();
+    const phone = document.getElementById("regPhone").value.trim();
+    const pass = document.getElementById("regPass").value;
+    const confirmPass = document.getElementById("regConfirmPass").value;
+    if (pass !== confirmPass) return showToast("Passwords do not match!");
+    if (users.some(u => u.phone === phone)) return showToast("Mobile number already registered!");
+
+    users.push({ name, phone, password: pass });
+    saveUsers();
+    currentUser = { name, phone, provider: "phone" };
+    saveCurrentUser();
+    renderProfile();
+    showToast("Account created!");
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const phone = document.getElementById("loginPhone").value.trim();
+    const pass = document.getElementById("loginPass").value;
+    const found = users.find(u => u.phone === phone && u.password === pass);
+    if (!found) return showToast("Wrong Phone No or Password!");
+
+    currentUser = { name: found.name, phone: found.phone, provider: "phone" };
+    saveCurrentUser();
+    renderProfile();
+    showToast(`Welcome, ${found.name}!`);
+  }
+
+  function handleLogout() {
+    currentUser = null;
+    saveCurrentUser();
+    authScreen = "login";
+    renderProfile();
+    showToast("Logged out successfully");
+  }
+
+  // ========== Firebase Realtime Listeners ==========
+  function loadProductsFromFirebase() {
+    db.ref("products").on("value", (snapshot) => {
+      const data = snapshot.val();
+      if (!data) {
+        PRODUCTS = [];
+        renderCategories();
+        renderProducts();
+        return;
+      }
+
+      // Convert object to array with id
+      const loaded = Object.keys(data).map(key => {
+        const raw = data[key];
+        let images = raw.images;
+        if (!Array.isArray(images)) {
+          if (typeof images === "string") images = [images];
+          else if (raw.image) images = [raw.image];
+          else images = [];
+        }
+        return {
+          id: key,
+          name: raw.name || "Untitled Product",
+          category: raw.category || "General",
+          price: Number(raw.price) || 0,
+          oldPrice: raw.oldPrice ? Number(raw.oldPrice) : null,
+          rating: raw.rating || "5.0",
+          sizes: Array.isArray(raw.sizes) ? raw.sizes : (raw.sizes ? String(raw.sizes).split(",").map(s => s.trim()) : []),
+          description: raw.description || "",
+          images: images.filter(Boolean),
+          stock: raw.stock !== undefined ? raw.stock : null
+        };
+      });
+
+      // Sort by createdAt descending (or name)
+      loaded.sort((a, b) => {
+        const ta = data[a.id].createdAt || 0;
+        const tb = data[b.id].createdAt || 0;
+        return tb - ta;
+      });
+
+      PRODUCTS = loaded;
+      renderCategories();
+      renderProducts();
+    }, (error) => {
+      console.error("Product load error:", error);
+      showToast("Failed to load products. Check Firebase rules.");
+    });
+  }
+
+  function syncOrdersFromFirebase() {
+    // Listen for admin-side status updates
+    db.ref("orders").on("value", (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
+      let changed = false;
+      orders.forEach(localOrd => {
+        if (data[localOrd.orderId] && data[localOrd.orderId].status !== localOrd.status) {
+          localOrd.status = data[localOrd.orderId].status;
+          changed = true;
+        }
+      });
+      if (changed) {
+        localStorage.setItem(STORAGE.ORDERS, JSON.stringify(orders));
+        if (document.getElementById("page-tracking").classList.contains("active")) renderTracking();
+        if (document.getElementById("page-order-detail").classList.contains("active")) {
+          // Re-render current order detail if open
+        }
+      }
+    });
+  }
+
+  // ========== Init ==========
+  renderCategories();
+  renderProducts();
+  updateCartBadge();
+  updateHeaderUserPill();
+  startBannerAutoScroll();
+  loadProductsFromFirebase();
+  syncOrdersFromFirebase();
+</script>
+</body>
+</html>
